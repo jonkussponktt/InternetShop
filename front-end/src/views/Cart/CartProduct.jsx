@@ -1,7 +1,10 @@
 
 import { formatPrice } from "../../constants/setPrice";
+import { useCurrency } from "../../contexts/CurrencyContext";
 
-export function CartProduct({ name, price, image, currency }) {
+export function CartProduct({ name, price, image }) {
+  const currency = useCurrency();
+
   return (
     <div className="cart-product">
       <img src={image} alt={name} />

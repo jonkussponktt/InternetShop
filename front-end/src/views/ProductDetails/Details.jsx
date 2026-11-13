@@ -3,8 +3,11 @@ import truck from "../../assets/truck.svg";
 import ret from "../../assets/return.svg";
 import { Accordion } from "./Accordion";
 import { formatPrice } from "../../constants/setPrice";
+import { useCurrency } from "../../contexts/CurrencyContext";
 
-export function Details({ product, currency }) {
+export function Details({ product }) {
+  const currency = useCurrency();
+
   console.log(`product.price: ${JSON.stringify(product)}`);
   return (
     <div className="details">

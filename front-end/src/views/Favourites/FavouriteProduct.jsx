@@ -1,6 +1,9 @@
 import "./styles/FavouriteProduct/FavouriteProduct.css";
+import { useProductActions } from "../../contexts/ProductActionsContext";
 
-export function FavouriteProduct({ id, name, price, image, onProductChosen, onProductDeleted }) {
+export function FavouriteProduct({ id, name, price, image, onProductDeleted }) {
+  const { onProductChosen } = useProductActions();
+
   return (
     <div className="favourite-product">
       <img src={image} alt={name} onClick={() => onProductChosen(id)} />

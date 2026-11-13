@@ -12,7 +12,9 @@ import { FavouritesList } from "../../views/Favourites/FavouritesList";
 import { Cart } from "../../views/Cart/Cart";
 import { ProductsList } from "../../views/ProductsList/ProductsList";
 import { ProductDetails } from "../../views/ProductDetails/ProductDetails";
-import { useState, useEffect } from "react";
+import { CurrencyProvider } from "../../contexts/CurrencyProvider";
+import { ProductActionsProvider } from "../../contexts/ProductActionsProvider";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 export function Layout() {
   const [currency, setCurrency] = useState("PLN");
@@ -119,7 +121,7 @@ export function Layout() {
     };
   }, [currentView, favouritesRevision]);
 
-  function addToFavourites(id, name) {
+  const addToFavourites = useCallback((id, name) => {
     if (!favouriteProducts?.some((f) => f.productName === name)) {
       fetch("http://localhost:3000/favourites", {
         method: "POST",
@@ -140,13 +142,21 @@ export function Layout() {
         }
       });
     }
-  }
+  }, [favouriteProducts]);
 
-  function handleProductChosen(id) {
+  const handleProductChosen = useCallback((id) => {
     setCurrentProductId(id);
     setCurrentProduct(null);
     setCurrentView("productDetails");
-  }
+  }, []);
+
+  const productActions = useMemo(
+    () => ({
+      onProductChosen: handleProductChosen,
+      onFavouriteAdd: addToFavourites,
+    }),
+    [handleProductChosen, addToFavourites],
+  );
 
   async function handleProductDeleted(productId) {
     const toBeDeletedId = await fetch(`http://localhost:3000/favourites`)
@@ -178,100 +188,93 @@ export function Layout() {
   }
 
   return (
-    <div className="layout">
-      <MainContent>
-        <TopBar>
-          <MainMenu
-            active={currentGender}
-            currentGenderCallback={(e) => {
-              const tmp = e.target.textContent;
-              const gender = GENDERS.find((g) => g.categoryName === tmp);
-              setCurrentGender(gender);
+    <CurrencyProvider currency={currency}>
+      <ProductActionsProvider actions={productActions}>
+        <div className="layout">
+          <MainContent>
+            <TopBar>
+              <MainMenu
+                active={currentGender}
+                currentGenderCallback={(e) => {
+                  const tmp = e.target.textContent;
+                  const gender = GENDERS.find((g) => g.categoryName === tmp);
+                  setCurrentGender(gender);
+                }}
+              />
+              <Logo comebackHandler={() => setCurrentView("default")} />
+              <CurrencySelector onCurrencySelect={setCurrency} />
+              <IconMenu
+                favouritesClickHandler={() => {
+                  setCurrentView("favourites");
+                }}
+                cartClickHandler={() => {
+                  setCurrentView("cart");
+                }}
+                favouritesCount={favouriteProducts.length}
+              />
+            </TopBar>
+          </MainContent>
+          <CategoriesMenu
+            currentCategory={currentCategory}
+            currentCategoryCallback={(e) => {
+              setCurrentCategory(e.target.textContent);
             }}
           />
-          <Logo comebackHandler={() => setCurrentView("default")} />
-          <CurrencySelector
-            currency={currency}
-            onCurrencySelect={(newCurrency) => setCurrency(newCurrency)}
-          />
-          <IconMenu
-            favouritesClickHandler={() => {
-              setCurrentView("favourites");
-            }}
-            cartClickHandler={() => {
-              setCurrentView("cart");
-            }}
-            favouritesCount={favouriteProducts.length}
-          />
-        </TopBar>
-      </MainContent>
-      <CategoriesMenu
-        currentCategory={currentCategory}
-        currentCategoryCallback={(e) => {
-          setCurrentCategory(e.target.textContent);
-        }}
-      />
-      {currentView === "favourites" ? (
-        <FavouritesList
-          products={favouriteProducts}
-          onProductChosen={handleProductChosen}
-          onProductDeleted={handleProductDeleted}
-          currency={currency}
-        />
-      ) : currentView === "cart" ? (
-        <Cart products={[]} currency={currency} />
-      ) : currentView === "products" ? (
-        <ProductsList
-          products={products}
-          currency={currency}
-          currentGender={currentGender}
-          currentCategory={currentCategory}
-          categoryClickCallback={(categoryName) => {
-            setCurrentCategory((prevCurrentCategory) => {
-              if (categoryName === prevCurrentCategory) {
-                return "";
+          {currentView === "favourites" ? (
+            <FavouritesList
+              products={favouriteProducts}
+              onProductDeleted={handleProductDeleted}
+            />
+          ) : currentView === "cart" ? (
+            <Cart products={[]} />
+          ) : currentView === "products" ? (
+            <ProductsList
+              products={products}
+              currentGender={currentGender}
+              currentCategory={currentCategory}
+              categoryClickCallback={(categoryName) => {
+                setCurrentCategory((prevCurrentCategory) => {
+                  if (categoryName === prevCurrentCategory) {
+                    return "";
+                  }
+                  setCurrentSubcategory("");
+                  return categoryName;
+                });
+              }}
+              categoryBreadcrumbClickCallback={() => {
+                if (currentSubcategory) {
+                  setCurrentSubcategory("");
+                }
+              }}
+              currentSubcategory={currentSubcategory}
+              subcategoryClickCallback={(subcategoryName) =>
+                setCurrentSubcategory(subcategoryName)
               }
-              setCurrentSubcategory("");
-              return categoryName;
-            });
-          }}
-          categoryBreadcrumbClickCallback={() => {
-            if (currentSubcategory) {
-              setCurrentSubcategory("");
-            }
-          }}
-          currentSubcategory={currentSubcategory}
-          subcategoryClickCallback={(subcategoryName) =>
-            setCurrentSubcategory(subcategoryName)
-          }
-          subcategoryBreadcrumbClickCallback={() => {
-            setCurrentSubcategory("");
-            setCurrentCategory("");
-          }}
-          onProductChosen={handleProductChosen}
-          onFavouriteAdd={addToFavourites}
-        />
-      ) : currentView === "productDetails" ? (
-        currentProduct ? (
-          <ProductDetails product={currentProduct} currency={currency} />
-        ) : (
-          <p>Trwa ładowanie produktu...</p>
-        )
-      ) : (
-        <MainPage
-          currency={currency}
-          currentGender={currentGender}
-          currentCategory={currentCategory}
-          products={products}
-          onButtonClick={(id) => {
-            setCurrentProductId(id);
-            setCurrentView("products");
-          }}
-          onProductChosen={handleProductChosen}
-          onFavouriteAdd={addToFavourites}
-        />
-      )}
-      <Footer />
-    </div>
+              subcategoryBreadcrumbClickCallback={() => {
+                setCurrentSubcategory("");
+                setCurrentCategory("");
+              }}
+            />
+          ) : currentView === "productDetails" ? (
+            currentProduct ? (
+              <ProductDetails product={currentProduct} />
+            ) : (
+              <p>Trwa ładowanie produktu...</p>
+            )
+          ) : (
+            <MainPage
+              currentGender={currentGender}
+              currentCategory={currentCategory}
+              products={products}
+              onButtonClick={(id) => {
+                setCurrentProductId(id);
+                setCurrentView("products");
+              }}
+            />
+          )}
+          <Footer />
+        </div>
+      </ProductActionsProvider>
+    </CurrencyProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { CartProduct } from "./CartProduct";
 
-export function CartProductsList({ products, currency }) {
+export function CartProductsList({ products }) {
   return (
     <div className="cart-products-list">
       {products.map((product) => (
@@ -9,7 +9,6 @@ export function CartProductsList({ products, currency }) {
           name={product.name}
           price={product.price}
           image={product.image}
-          currency={currency}
         />
       ))}
     </div>

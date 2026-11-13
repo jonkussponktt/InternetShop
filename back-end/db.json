@@ -1434,20 +1434,16 @@
   ],
   "favourites": [
     {
-      "productId": 26,
+      "productId": 1,
       "id": 1
+    },
+    {
+      "productId": 27,
+      "id": 2
     },
     {
       "productId": 28,
       "id": 3
-    },
-    {
-      "productId": 29,
-      "id": 4
-    },
-    {
-      "productId": 26,
-      "id": 5
     }
   ]
 }

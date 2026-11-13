@@ -1,6 +1,9 @@
 import "./CurrencySelector.css";
+import { useCurrency } from "../../contexts/CurrencyContext";
 
-export function CurrencySelector({ currency, onCurrencySelect }) {
+export function CurrencySelector({ onCurrencySelect }) {
+  const currency = useCurrency();
+
   return (
     <div className="currency-selector">
       <select

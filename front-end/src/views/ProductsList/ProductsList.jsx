@@ -6,7 +6,6 @@ import { Pagination } from "./Pagination";
 
 export function ProductsList({
   products,
-  currency,
   currentGender,
   currentCategory,
   categoryClickCallback,
@@ -14,8 +13,6 @@ export function ProductsList({
   currentSubcategory,
   subcategoryClickCallback,
   subcategoryBreadcrumbClickCallback,
-  onProductChosen,
-  onFavouriteAdd,
 }) {
   return (
     <div className="products-list-layout">
@@ -38,9 +35,6 @@ export function ProductsList({
       </h1>
       <Products
         products={products}
-        onProductChosen={onProductChosen}
-        onFavouriteAdd={onFavouriteAdd}
-        currency={currency}
       />
       <Pagination pagesNumber={5} />
     </div>

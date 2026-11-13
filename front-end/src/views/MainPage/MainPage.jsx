@@ -6,15 +6,14 @@ import { Bestsellers } from "./Bestsellers";
 import { Product } from "./Product";
 import { GENDERS } from "../../constants/categories";
 import { formatPrice } from "../../constants/setPrice";
+import { useCurrency } from "../../contexts/CurrencyContext";
 
 export function MainPage({
-  currency,
   currentGender,
   products,
   onButtonClick,
-  onProductChosen,
-  onFavouriteAdd,
 }) {
+  const currency = useCurrency();
   const selectedGenderApiValue = GENDERS.find(
     (gender) => gender.apiValue === currentGender.apiValue,
   ).apiValue;
@@ -42,8 +41,6 @@ export function MainPage({
                 name={product.productName}
                 price={formatPrice(product.pricePLN, currency)}
                 image={product.photos[0]}
-                onProductChosen={onProductChosen}
-                onHeartClick={onFavouriteAdd}
               />
             ))}
         </CenteredContent>
