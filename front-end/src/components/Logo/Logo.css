@@ -1,0 +1,40 @@
+/* TopSklep® */
+
+.logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 196px;
+  height: 48px;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.logo img {
+  display: block;
+  width: min(190px, 30vw);
+  max-height: 48px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.logo img:hover {
+  filter: drop-shadow(0 2px 3px rgb(34 32 32 / 18%));
+  transform: scale(1.03);
+}
+
+@media (max-width: 600px) {
+  .logo img {
+    width: min(140px, 30vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo img {
+    transition: none;
+  }
+}

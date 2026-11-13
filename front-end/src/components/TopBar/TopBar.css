@@ -1,0 +1,19 @@
+.top-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: min(1600px, calc(100% - 32px));
+  height: 80px;
+  margin: 0 auto;
+  padding: 0 16px;
+  border: 1px solid #d5d5d5;
+  background: var(--color-white);
+}
+
+@media (max-width: 600px) {
+  .top-bar {
+    width: calc(100% - 20px);
+    height: 64px;
+    padding: 0 10px;
+  }
+}

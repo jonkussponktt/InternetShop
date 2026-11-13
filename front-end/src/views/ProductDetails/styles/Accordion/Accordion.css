@@ -1,0 +1,30 @@
+.accordion {
+  min-width: 0;
+  border-bottom: 1px solid #bdbdbd;
+}
+
+.accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.accordion-header h3 {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.accordion-header span {
+  color: var(--color-text-grey);
+  font-size: 18px;
+}
+
+.accordion-content {
+  padding: 0 0 14px;
+  color: #444;
+  font-size: 13px;
+  line-height: 1.5;
+}

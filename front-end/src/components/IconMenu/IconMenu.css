@@ -1,0 +1,75 @@
+.icon-menu {
+  position: absolute;
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 96px;
+  height: 40px;
+  transform: translateY(-50%);
+}
+
+.icon-menu ul {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+.icon-menu li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.icon-menu li img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+
+.icon-menu .heart img {
+  height: 18px;
+}
+
+.icon-menu li:hover {
+  background-color: #f4f4f4;
+}
+
+.icon-menu li:hover img {
+  transform: scale(1.12);
+}
+
+.icon-menu li:active img {
+  transform: scale(0.94);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-menu li,
+  .icon-menu li img {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .icon-menu {
+    right: 8px;
+    width: 72px;
+  }
+
+  .icon-menu ul {
+    gap: 12px;
+  }
+}

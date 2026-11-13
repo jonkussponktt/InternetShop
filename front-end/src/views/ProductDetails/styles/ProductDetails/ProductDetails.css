@@ -1,0 +1,17 @@
+.product-details {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(340px, 1.1fr);
+  align-items: start;
+  gap: clamp(20px, 3vw, 48px);
+  width: min(100% - 48px, 1200px);
+  margin: 24px auto 56px;
+}
+
+@media (max-width: 760px) {
+  .product-details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    width: calc(100% - 32px);
+    margin: 20px auto 40px;
+  }
+}

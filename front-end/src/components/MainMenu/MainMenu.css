@@ -1,0 +1,81 @@
+.main-menu {
+  position: absolute;
+  inset: 0 auto 0 16px;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 24px);
+}
+
+.main-menu button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-grey);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: color 160ms ease;
+}
+
+.main-menu button.main-menu-button-active {
+  color: var(--color-text-default);
+  font-weight: 700;
+}
+
+.main-menu button.main-menu-button-active::after,
+.main-menu button:hover::after,
+.main-menu button:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.main-menu button::after {
+  position: absolute;
+  right: 0;
+  bottom: 7px;
+  left: 0;
+  height: 2px;
+  background: var(--color-text-default);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 160ms ease;
+}
+
+.main-menu button:hover,
+.main-menu button:focus-visible {
+  color: var(--color-text-default);
+}
+
+.main-menu button:focus-visible {
+  outline: 2px solid var(--color-theme-main);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .main-menu {
+    left: 10px;
+    gap: 8px;
+  }
+
+  .main-menu button {
+    min-height: 38px;
+    font-size: 9px;
+  }
+
+  .main-menu button::after {
+    bottom: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-menu button,
+  .main-menu button::after {
+    transition: none;
+  }
+}

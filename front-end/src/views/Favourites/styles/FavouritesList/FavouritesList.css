@@ -1,0 +1,22 @@
+.favourites-list {
+  width: min(100% - 48px, 1056px);
+  margin: 10px auto 48px;
+  padding: 14px 12px 8px;
+  background: #f4f4f4;
+}
+
+.favourites-list > h1 {
+  margin-bottom: 0;
+  padding: 0 0 7px;
+  border-bottom: 1px solid #aaa;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+  .favourites-list {
+    width: calc(100% - 24px);
+    margin: 12px auto 32px;
+    padding: 12px 10px 6px;
+  }
+}
