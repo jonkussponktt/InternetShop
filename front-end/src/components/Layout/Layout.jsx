@@ -7,7 +7,11 @@ import { IconMenu } from "../IconMenu/IconMenu";
 import { CategoriesMenu } from "../CategoriesMenu/CategoriesMenu";
 import { Footer } from "../Footer/Footer";
 import { MainPage } from "../../views/MainPage/MainPage";
-import { GENDERS, CATEGORIES } from "../../constants/categories";
+import {
+  GENDERS,
+  CATEGORIES,
+  MAX_ONE_KIND_IN_CART,
+} from "../../constants/categories";
 import { FavouritesList } from "../../views/Favourites/FavouritesList";
 import { Cart } from "../../views/Cart/Cart";
 import { ProductsList } from "../../views/ProductsList/ProductsList";
@@ -228,10 +232,19 @@ export function Layout() {
   const addProductToCart = useCallback(async (id) => {
     const cart = localStorage.getItem("cartProducts");
     const current = cart ? JSON.parse(cart) : [];
-    const cartProducts = [...current, id];
-    localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-    const newProduct = await fetchData(`http://localhost:3000/products/${id}`);
-    setCurrentCart((previous) => [...previous, newProduct]);
+    if (!current.includes(id)) {
+      const newProduct = await fetchData(
+        `http://localhost:3000/products/${id}`,
+      );
+      setCurrentCart((previous) => [...previous, newProduct]);
+    }
+
+    if (current.filter((p) => p === id).length < MAX_ONE_KIND_IN_CART) {
+      const cartProducts = [...current, id];
+      localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    } else {
+      console.error("Cannot add more than 5 products of one type to the cart");
+    }
   }, []);
 
   const removeProductFromCart = useCallback((id) => {

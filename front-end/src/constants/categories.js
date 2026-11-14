@@ -1,3 +1,5 @@
+export const MAX_ONE_KIND_IN_CART = 5;
+
 export const GENDERS = [
     {
         categoryName: "Kobieta",
