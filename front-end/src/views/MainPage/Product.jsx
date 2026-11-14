@@ -4,14 +4,19 @@ import filledHeartIcon from "../../assets/heart-filled.svg";
 import { useProductActions } from "../../contexts/ProductActionsContext";
 
 export function Product({ id, name, price, image, isFavourite }) {
-  const { onProductChosen, onFavouriteAdd } = useProductActions();
+  const { onProductChosen, onFavouriteAdd, onFavouriteRemove } =
+    useProductActions();
 
   return (
     <div className="product">
       <button
         className="addToFavorite"
         onClick={() => {
-          onFavouriteAdd(id, name);
+          if (isFavourite) {
+            onFavouriteRemove(id, name);
+          } else {
+            onFavouriteAdd(id, name);
+          }
         }}
       >
         <img src={isFavourite ? filledHeartIcon : heartIcon} alt="" />

@@ -206,6 +206,15 @@ export function Layout() {
     [favouriteProducts],
   );
 
+  const removeFromFavourites = useCallback(
+    async (id, name) => {
+      if (favouriteProducts?.some((f) => f.productName === name)) {
+        await handleProductDeleted(id);
+      }
+    },
+    [favouriteProducts],
+  );
+
   const handleProductChosen = useCallback((id) => {
     setCurrentProductId(id);
     setCurrentProduct(null);
@@ -239,12 +248,14 @@ export function Layout() {
     () => ({
       onProductChosen: handleProductChosen,
       onFavouriteAdd: addToFavourites,
+      onFavouriteRemove: removeFromFavourites,
       onAddToCart: addProductToCart,
       onRemoveFromCart: removeProductFromCart,
     }),
     [
       handleProductChosen,
       addToFavourites,
+      removeFromFavourites,
       addProductToCart,
       removeProductFromCart,
     ],
@@ -360,12 +371,6 @@ export function Layout() {
               currentSubcategory={currentSubcategory?.categoryName}
               subcategoryClickCallback={(subcategoryName) => {
                 if (currentCategory?.subcategories) {
-                  console.log("set subcategory:");
-                  console.log(
-                    currentCategory.subcategories.find(
-                      (subCat) => subCat.categoryName === subcategoryName,
-                    ),
-                  );
                   setCurrentSubcategory(
                     currentCategory.subcategories.find(
                       (subCat) => subCat.categoryName === subcategoryName,
