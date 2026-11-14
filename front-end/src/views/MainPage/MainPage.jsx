@@ -4,6 +4,7 @@ import { CenteredContent } from "./CenteredContent";
 import { FullWidthButton } from "./FullWidthButton";
 import { Bestsellers } from "./Bestsellers";
 import { Product } from "./Product";
+import { EmptyState } from "../../components/EmptyState/EmptyState";
 import { GENDERS } from "../../constants/categories";
 import { formatPrice } from "../../constants/setPrice";
 import { useCurrency } from "../../contexts/CurrencyContext";
@@ -11,6 +12,7 @@ import { useCurrency } from "../../contexts/CurrencyContext";
 export function MainPage({
   currentGender,
   onButtonClick,
+  onExploreProducts,
   products,
   favouriteProducts,
 }) {
@@ -21,6 +23,9 @@ export function MainPage({
   if (!products) {
     return <div className="main-page">Brak produktów</div>;
   }
+  const bestsellers = products.filter(
+    (product) => product.gender === selectedGenderApiValue,
+  );
 
   return (
     <div className="main-page">
@@ -32,10 +37,16 @@ export function MainPage({
         </CenteredContent>
       </Hero>
       <Bestsellers>
-        <CenteredContent>
-          {products
-            .filter((p) => p.gender === selectedGenderApiValue)
-            .map((product) => (
+        {bestsellers.length === 0 ? (
+          <EmptyState
+            title="Brak bestsellerów"
+            description="W tej kategorii nie ma teraz polecanych produktów."
+            actionLabel="Sprawdź wszystkie produkty"
+            onAction={onExploreProducts}
+          />
+        ) : (
+          <CenteredContent>
+            {bestsellers.map((product) => (
               <Product
                 key={product.id}
                 id={product.id}
@@ -47,7 +58,8 @@ export function MainPage({
                 )}
               />
             ))}
-        </CenteredContent>
+          </CenteredContent>
+        )}
       </Bestsellers>
     </div>
   );

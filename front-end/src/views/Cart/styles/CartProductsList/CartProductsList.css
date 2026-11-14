@@ -4,6 +4,10 @@
   background: #f4f4f4;
 }
 
+.cart-products-list > .empty-state {
+  background: var(--color-white);
+}
+
 @media (max-width: 600px) {
   .cart-products-list {
     padding: 0 10px 6px;

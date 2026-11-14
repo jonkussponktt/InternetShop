@@ -3,6 +3,7 @@ import { ExpandableMenu } from "./ExpandableMenu";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { Products } from "./Products";
 import { Pagination } from "./Pagination";
+import { EmptyState } from "../../components/EmptyState/EmptyState";
 
 export function ProductsList({
   products,
@@ -14,6 +15,7 @@ export function ProductsList({
   currentSubcategory,
   subcategoryClickCallback,
   subcategoryBreadcrumbClickCallback,
+  onBackToHome,
 }) {
   return (
     <div className="products-list-layout">
@@ -34,11 +36,22 @@ export function ProductsList({
       <h1 className="products-list-heading">
         {currentSubcategory || currentCategory}
       </h1>
-      <Products
-        products={products}
-        favouriteProducts={favouriteProducts}
-      />
-      <Pagination pagesNumber={5} />
+      {products.length === 0 ? (
+        <EmptyState
+          title="Nie znaleziono produktów"
+          description="Spróbuj zmienić wybrane kryteria lub wróć na stronę główną, aby sprawdzić inne produkty."
+          actionLabel="Wróć na stronę główną"
+          onAction={onBackToHome}
+        />
+      ) : (
+        <>
+          <Products
+            products={products}
+            favouriteProducts={favouriteProducts}
+          />
+          <Pagination pagesNumber={5} />
+        </>
+      )}
     </div>
   );
 }

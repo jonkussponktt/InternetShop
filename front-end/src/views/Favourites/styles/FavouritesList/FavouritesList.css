@@ -13,10 +13,25 @@
   line-height: 1.4;
 }
 
+.favourites-list > .empty-state {
+  margin-top: 12px;
+}
+
+.favourites-list-status {
+  margin: 12px 0 0;
+  color: var(--color-text-grey);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 @media (max-width: 600px) {
   .favourites-list {
     width: calc(100% - 24px);
     margin: 12px auto 32px;
     padding: 12px 10px 6px;
+  }
+
+  .favourites-list > .empty-state {
+    margin-top: 10px;
   }
 }

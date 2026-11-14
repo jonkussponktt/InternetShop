@@ -26,6 +26,7 @@ export function Layout() {
   const [currentView, setCurrentView] = useState("default");
   const [products, setProducts] = useState([]);
   const [favouriteProducts, setFavouriteProducts] = useState([]);
+  const [favouritesStatus, setFavouritesStatus] = useState("loading");
   const [favouritesRevision, setFavouritesRevision] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -135,25 +136,30 @@ export function Layout() {
     let ignore = false;
 
     async function loadFavourites() {
-      const data = await fetchData(`http://localhost:3000/favourites`);
-      if (!Array.isArray(data)) {
-        throw new Error("The favourites resource did not return an array");
-      }
-      const loadedFavouriteProducts = await Promise.all(
-        data.map((favourite) =>
-          fetchData(`http://localhost:3000/products/${favourite.productId}`),
-        ),
-      );
-      if (!ignore) {
-        setFavouriteProducts(loadedFavouriteProducts);
+      setFavouritesStatus("loading");
+      try {
+        const data = await fetchData(`http://localhost:3000/favourites`);
+        if (!Array.isArray(data)) {
+          throw new Error("The favourites resource did not return an array");
+        }
+        const loadedFavouriteProducts = await Promise.all(
+          data.map((favourite) =>
+            fetchData(`http://localhost:3000/products/${favourite.productId}`),
+          ),
+        );
+        if (!ignore) {
+          setFavouriteProducts(loadedFavouriteProducts);
+          setFavouritesStatus("ready");
+        }
+      } catch (error) {
+        console.error("Error fetching favourite products:", error);
+        if (!ignore) {
+          setFavouritesStatus("error");
+        }
       }
     }
 
-    async function loadFavouriteProducts() {
-      await loadFavourites();
-    }
-
-    loadFavouriteProducts();
+    loadFavourites();
     return () => {
       ignore = true;
     };
@@ -189,6 +195,10 @@ export function Layout() {
     setCurrentProductId(id);
     setCurrentProduct(null);
     setCurrentView("productDetails");
+  }, []);
+
+  const handleExploreProducts = useCallback(() => {
+    setCurrentView("products");
   }, []);
 
   const addProductToCart = useCallback(async (id) => {
@@ -243,6 +253,7 @@ export function Layout() {
         if (response.ok) {
           const newFavourites = (prevFavouriteProducts) =>
             prevFavouriteProducts.filter((p) => p.id !== toBeDeletedId);
+          setFavouritesStatus("loading");
           setFavouriteProducts(newFavourites);
           setFavouritesRevision((revision) => revision + 1);
         }
@@ -292,9 +303,14 @@ export function Layout() {
             <FavouritesList
               products={favouriteProducts}
               onProductDeleted={handleProductDeleted}
+              onExploreProducts={handleExploreProducts}
+              status={favouritesStatus}
             />
           ) : currentView === "cart" ? (
-            <Cart products={currentCart} />
+            <Cart
+              products={currentCart}
+              onExploreProducts={handleExploreProducts}
+            />
           ) : currentView === "products" ? (
             <ProductsList
               products={products}
@@ -323,6 +339,7 @@ export function Layout() {
                 setCurrentSubcategory("");
                 setCurrentCategory("");
               }}
+              onBackToHome={() => setCurrentView("default")}
             />
           ) : currentView === "productDetails" ? (
             currentProduct ? (
@@ -336,6 +353,7 @@ export function Layout() {
               currentCategory={currentCategory}
               products={products}
               favouriteProducts={favouriteProducts}
+              onExploreProducts={handleExploreProducts}
               onButtonClick={(id) => {
                 setCurrentProductId(id);
                 setCurrentView("products");

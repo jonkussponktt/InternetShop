@@ -1,0 +1,71 @@
+.empty-state {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 220px;
+  padding: clamp(24px, 4vw, 48px);
+  border: 1px solid #e5e5e5;
+  background: var(--color-white);
+  text-align: center;
+}
+
+.empty-state h2 {
+  margin: 0 0 8px;
+  color: var(--color-text-default);
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.3;
+}
+
+.empty-state p {
+  max-width: 42rem;
+  margin: 0 0 20px;
+  color: var(--color-text-grey);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.empty-state button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  background: var(--color-theme-main);
+  color: var(--color-white);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.empty-state button:hover {
+  transform: translateY(-1px);
+  background: #044f33;
+}
+
+.empty-state button:focus-visible {
+  outline: 2px solid var(--color-theme-main);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .empty-state {
+    min-height: 190px;
+    padding: 24px 16px;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .empty-state button {
+    transition: none;
+  }
+}
