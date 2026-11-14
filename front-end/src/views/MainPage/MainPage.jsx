@@ -10,8 +10,9 @@ import { useCurrency } from "../../contexts/CurrencyContext";
 
 export function MainPage({
   currentGender,
-  products,
   onButtonClick,
+  products,
+  favouriteProducts,
 }) {
   const currency = useCurrency();
   const selectedGenderApiValue = GENDERS.find(
@@ -41,6 +42,9 @@ export function MainPage({
                 name={product.productName}
                 price={formatPrice(product.pricePLN, currency)}
                 image={product.photos[0]}
+                isFavourite={favouriteProducts.some(
+                  (favProduct) => favProduct.id === product.id,
+                )}
               />
             ))}
         </CenteredContent>

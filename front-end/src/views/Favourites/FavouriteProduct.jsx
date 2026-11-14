@@ -2,7 +2,7 @@ import "./styles/FavouriteProduct/FavouriteProduct.css";
 import { useProductActions } from "../../contexts/ProductActionsContext";
 
 export function FavouriteProduct({ id, name, price, image, onProductDeleted }) {
-  const { onProductChosen } = useProductActions();
+  const { onProductChosen, onAddToCart } = useProductActions();
 
   return (
     <div className="favourite-product">
@@ -11,7 +11,7 @@ export function FavouriteProduct({ id, name, price, image, onProductDeleted }) {
       <h3>{price}</h3>
       <p>{price}</p>
       <button key="remove" onClick={() => onProductDeleted(id)}>Usuń</button>
-      <button key="addToCart">Dodaj do koszyka</button>
+      <button key="addToCart" onClick={() => onAddToCart(id)}>Dodaj do koszyka</button>
     </div>
   );
 }

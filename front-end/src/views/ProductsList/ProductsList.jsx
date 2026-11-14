@@ -6,6 +6,7 @@ import { Pagination } from "./Pagination";
 
 export function ProductsList({
   products,
+  favouriteProducts,
   currentGender,
   currentCategory,
   categoryClickCallback,
@@ -35,6 +36,7 @@ export function ProductsList({
       </h1>
       <Products
         products={products}
+        favouriteProducts={favouriteProducts}
       />
       <Pagination pagesNumber={5} />
     </div>

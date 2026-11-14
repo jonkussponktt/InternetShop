@@ -20,6 +20,14 @@
   height: 94px;
   background: var(--color-white);
   object-fit: cover;
+  cursor: pointer;
+}
+
+.productName:hover {
+  cursor: pointer;
+  color: var(--color-theme-main);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .cart-product > h3:first-of-type {

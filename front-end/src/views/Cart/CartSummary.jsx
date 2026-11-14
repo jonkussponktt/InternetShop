@@ -7,7 +7,7 @@ export function CartSummary({ products }) {
   const currency = useCurrency();
 
   const totalPrice = products.reduce(
-    (total, product) => total + product.price,
+    (total, product) => total + product.pricePLN,
     0,
   );
   const deliveryCost = totalPrice > 500 ? 0 : 49;
@@ -26,7 +26,8 @@ export function CartSummary({ products }) {
       </p>
       <button key="toCashRegister">DO KASY</button>
       <span>
-        <img src={truck} /> <span>Darmowa dostawa od 500 zł</span>
+        <img src={truck} />
+        <span>Darmowa dostawa od {formatPrice(500, currency)}</span>
       </span>
     </div>
   );

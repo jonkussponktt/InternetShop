@@ -8,7 +8,7 @@ export function IconMenu({
   favouritesClickHandler,
   cartClickHandler,
   favouritesCount,
-  cartCount = 0,
+  cartCount,
 }) {
   return (
     <div className="icon-menu">

@@ -21,6 +21,14 @@
   height: 94px;
   background: #fff;
   object-fit: cover;
+  cursor: pointer;
+}
+
+.favourite-product h3:hover {
+  cursor: pointer;
+  color: var(--color-theme-main);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .favourite-product > h3:first-of-type {

@@ -1,14 +1,9 @@
 import "./styles/Product/Product.css";
 import heartIcon from "../../assets/heart.svg";
+import filledHeartIcon from "../../assets/heart-filled.svg";
 import { useProductActions } from "../../contexts/ProductActionsContext";
 
-export function Product({
-  id,
-  name,
-  price,
-  image,
-  isFavourite,
-}) {
+export function Product({ id, name, price, image, isFavourite }) {
   const { onProductChosen, onFavouriteAdd } = useProductActions();
 
   return (
@@ -19,7 +14,7 @@ export function Product({
           onFavouriteAdd(id, name);
         }}
       >
-        <img src={heartIcon} className={isFavourite ? "favourite" : ""} />
+        <img src={isFavourite ? filledHeartIcon : heartIcon} alt="" />
       </button>
       <img src={image} alt={name} onClick={() => onProductChosen?.(id)} />
       <h3 onClick={() => onProductChosen?.(id)}>{name}</h3>

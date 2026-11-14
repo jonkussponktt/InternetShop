@@ -7,7 +7,7 @@ import { IconMenu } from "../IconMenu/IconMenu";
 import { CategoriesMenu } from "../CategoriesMenu/CategoriesMenu";
 import { Footer } from "../Footer/Footer";
 import { MainPage } from "../../views/MainPage/MainPage";
-import { GENDERS, CATEGORIES } from "../../constants/categories";
+import { GENDERS } from "../../constants/categories";
 import { FavouritesList } from "../../views/Favourites/FavouritesList";
 import { Cart } from "../../views/Cart/Cart";
 import { ProductsList } from "../../views/ProductsList/ProductsList";
@@ -29,6 +29,13 @@ export function Layout() {
   const [favouritesRevision, setFavouritesRevision] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const cartStorage = localStorage.getItem("cartProducts");
+  const cart = useMemo(
+    () => (cartStorage ? JSON.parse(cartStorage) : []),
+    [cartStorage],
+  );
+  const [currentCart, setCurrentCart] = useState(cart ? cart : 0);
+
   async function fetchData(request) {
     const response = await fetch(request);
     if (!response.ok) {
@@ -37,6 +44,39 @@ export function Layout() {
 
     return response.json();
   }
+
+  useEffect(() => {
+    if (!cart) {
+      localStorage.setItem("cartProducts", "");
+    }
+  }, [cart]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function fetchCartProductsFromLocalStorage() {
+      const cart = localStorage.getItem("cartProducts");
+      const current = cart ? JSON.parse(cart) : [];
+      const currentCartProducts = await Promise.all(
+        current.map((productId) =>
+          fetchData(`http://localhost:3000/products/${productId}`),
+        ),
+      );
+      setCurrentCart(currentCartProducts);
+    }
+
+    async function fetchCartProducts() {
+      await fetchCartProductsFromLocalStorage();
+    }
+
+    if (!ignore) {
+      fetchCartProducts();
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [currentView]);
+
   useEffect(() => {
     let ignore = false;
 
@@ -113,36 +153,37 @@ export function Layout() {
       await loadFavourites();
     }
 
-    if (currentView === "favourites") {
-      loadFavouriteProducts();
-    }
+    loadFavouriteProducts();
     return () => {
       ignore = true;
     };
   }, [currentView, favouritesRevision]);
 
-  const addToFavourites = useCallback((id, name) => {
-    if (!favouriteProducts?.some((f) => f.productName === name)) {
-      fetch("http://localhost:3000/favourites", {
-        method: "POST",
-        body: JSON.stringify({ productId: id }),
-        headers: { "Content-Type": "application/json" },
-      }).then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            fetch(`http://localhost:3000/products/${data.productId}`).then(
-              (response) =>
-                response.json().then((newFavProduct) => {
-                  setFavouriteProducts((prevFavouriteProducts) => {
-                    return [...prevFavouriteProducts, newFavProduct];
-                  });
-                }),
-            );
-          });
-        }
-      });
-    }
-  }, [favouriteProducts]);
+  const addToFavourites = useCallback(
+    (id, name) => {
+      if (!favouriteProducts?.some((f) => f.productName === name)) {
+        fetch("http://localhost:3000/favourites", {
+          method: "POST",
+          body: JSON.stringify({ productId: id }),
+          headers: { "Content-Type": "application/json" },
+        }).then((response) => {
+          if (response.ok) {
+            response.json().then((data) => {
+              fetch(`http://localhost:3000/products/${data.productId}`).then(
+                (response) =>
+                  response.json().then((newFavProduct) => {
+                    setFavouriteProducts((prevFavouriteProducts) => {
+                      return [...prevFavouriteProducts, newFavProduct];
+                    });
+                  }),
+              );
+            });
+          }
+        });
+      }
+    },
+    [favouriteProducts],
+  );
 
   const handleProductChosen = useCallback((id) => {
     setCurrentProductId(id);
@@ -150,12 +191,38 @@ export function Layout() {
     setCurrentView("productDetails");
   }, []);
 
+  const addProductToCart = useCallback(async (id) => {
+    const cart = localStorage.getItem("cartProducts");
+    const current = cart ? JSON.parse(cart) : [];
+    const cartProducts = [...current, id];
+    localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    const newProduct = await fetchData(`http://localhost:3000/products/${id}`);
+    setCurrentCart((previous) => [...previous, newProduct]);
+  }, []);
+
+  const removeProductFromCart = useCallback((id) => {
+    const cart = localStorage.getItem("cartProducts");
+    const current = cart ? JSON.parse(cart) : [];
+    const cartProducts = current.filter((productId) => productId !== id);
+    localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    setCurrentCart((previous) =>
+      previous.filter((product) => product.id !== id),
+    );
+  }, []);
+
   const productActions = useMemo(
     () => ({
       onProductChosen: handleProductChosen,
       onFavouriteAdd: addToFavourites,
+      onAddToCart: addProductToCart,
+      onRemoveFromCart: removeProductFromCart,
     }),
-    [handleProductChosen, addToFavourites],
+    [
+      handleProductChosen,
+      addToFavourites,
+      addProductToCart,
+      removeProductFromCart,
+    ],
   );
 
   async function handleProductDeleted(productId) {
@@ -211,6 +278,7 @@ export function Layout() {
                   setCurrentView("cart");
                 }}
                 favouritesCount={favouriteProducts.length}
+                cartCount={currentCart.length}
               />
             </TopBar>
           </MainContent>
@@ -226,10 +294,11 @@ export function Layout() {
               onProductDeleted={handleProductDeleted}
             />
           ) : currentView === "cart" ? (
-            <Cart products={[]} />
+            <Cart products={currentCart} />
           ) : currentView === "products" ? (
             <ProductsList
               products={products}
+              favouriteProducts={favouriteProducts}
               currentGender={currentGender}
               currentCategory={currentCategory}
               categoryClickCallback={(categoryName) => {
@@ -266,6 +335,7 @@ export function Layout() {
               currentGender={currentGender}
               currentCategory={currentCategory}
               products={products}
+              favouriteProducts={favouriteProducts}
               onButtonClick={(id) => {
                 setCurrentProductId(id);
                 setCurrentView("products");

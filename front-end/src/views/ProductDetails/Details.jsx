@@ -4,17 +4,18 @@ import ret from "../../assets/return.svg";
 import { Accordion } from "./Accordion";
 import { formatPrice } from "../../constants/setPrice";
 import { useCurrency } from "../../contexts/CurrencyContext";
+import { useProductActions } from "../../contexts/ProductActionsContext";
 
 export function Details({ product }) {
   const currency = useCurrency();
+  const { onAddToCart } = useProductActions();
 
-  console.log(`product.price: ${JSON.stringify(product)}`);
   return (
     <div className="details">
       <h2>{product.brand}</h2>
       <p>{product.productName}</p>
       <p>Cena: {formatPrice(product.pricePLN, currency)}</p>
-      <button onClick={() => console.log("Dodano do koszyka")}>
+      <button onClick={() => onAddToCart(product.id)}>
         Dodaj do koszyka
       </button>
       <img src={truck} alt="Truck" />

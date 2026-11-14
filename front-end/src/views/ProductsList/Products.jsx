@@ -3,7 +3,7 @@ import { CenteredContent } from "../MainPage/CenteredContent";
 import { formatPrice } from "../../constants/setPrice";
 import { useCurrency } from "../../contexts/CurrencyContext";
 
-export function Products({ products }) {
+export function Products({ products, favouriteProducts }) {
   const currency = useCurrency();
 
   return (
@@ -15,6 +15,9 @@ export function Products({ products }) {
           name={p.productName}
           price={formatPrice(p.pricePLN, currency)}
           image={p.photos?.[0]}
+          isFavourite={favouriteProducts.some(
+            (favProduct) => favProduct.id === p.id,
+          )}
         />
       ))}
     </CenteredContent>

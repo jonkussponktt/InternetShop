@@ -6,9 +6,10 @@ export function CartProductsList({ products }) {
       {products.map((product) => (
         <CartProduct
           key={product.id}
-          name={product.name}
-          price={product.price}
-          image={product.image}
+          id={product.id}
+          name={product.productName}
+          price={product.pricePLN}
+          image={product.photos?.[0]}
         />
       ))}
     </div>

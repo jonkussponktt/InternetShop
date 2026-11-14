@@ -10,6 +10,7 @@
   margin-bottom: 10px;
   background: var(--color-grey);
   object-fit: cover;
+  cursor: pointer;
 }
 
 .product h3 {
@@ -17,6 +18,14 @@
   font-size: 14px;
   font-weight: 600;
   line-height: 1.35;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.product h3:hover {
+  color: var(--color-theme-main);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .product p {
@@ -52,11 +61,6 @@
   display: block;
   width: 18px;
   height: 18px;
-}
-
-.product .addToFavorite img.favourite {
-  filter: invert(18%) sepia(97%) saturate(6400%) hue-rotate(354deg)
-    brightness(96%) contrast(110%);
 }
 
 @media (max-width: 480px) {
