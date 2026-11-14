@@ -7,7 +7,7 @@ import { IconMenu } from "../IconMenu/IconMenu";
 import { CategoriesMenu } from "../CategoriesMenu/CategoriesMenu";
 import { Footer } from "../Footer/Footer";
 import { MainPage } from "../../views/MainPage/MainPage";
-import { GENDERS } from "../../constants/categories";
+import { GENDERS, CATEGORIES } from "../../constants/categories";
 import { FavouritesList } from "../../views/Favourites/FavouritesList";
 import { Cart } from "../../views/Cart/Cart";
 import { ProductsList } from "../../views/ProductsList/ProductsList";
@@ -97,9 +97,18 @@ export function Layout() {
             setProducts(data.bestsellers);
           }
         } else if (currentView === "products") {
-          const data = await fetchData(
-            `http://localhost:3000/products?gender=${currentGender.apiValue}`,
-          );
+          const base = `http://localhost:3000/products?gender=${currentGender.apiValue}`;
+          const query =
+            base +
+            (currentCategory !== null && currentCategory !== undefined
+              ? `&category=${currentCategory.path}`
+              : "");
+          const finalQuery =
+            query +
+            (currentSubcategory
+              ? `&subcategory=${currentSubcategory.path}`
+              : "");
+          const data = await fetchData(finalQuery);
           if (!Array.isArray(data)) {
             throw new Error("The products resource did not return an array");
           }
@@ -130,7 +139,13 @@ export function Layout() {
     return () => {
       ignore = true;
     };
-  }, [currentGender, currentView, currentProductId]);
+  }, [
+    currentGender,
+    currentView,
+    currentProductId,
+    currentCategory,
+    currentSubcategory,
+  ]);
 
   useEffect(() => {
     let ignore = false;
@@ -276,7 +291,11 @@ export function Layout() {
                 currentGenderCallback={(e) => {
                   const tmp = e.target.textContent;
                   const gender = GENDERS.find((g) => g.categoryName === tmp);
+                  console.log(gender);
                   setCurrentGender(gender);
+                  if (currentView !== "products") {
+                    setCurrentView("default");
+                  }
                 }}
               />
               <Logo comebackHandler={() => setCurrentView("default")} />
@@ -294,9 +313,13 @@ export function Layout() {
             </TopBar>
           </MainContent>
           <CategoriesMenu
-            currentCategory={currentCategory}
+            currentCategory={currentCategory?.categoryName}
             currentCategoryCallback={(e) => {
-              setCurrentCategory(e.target.textContent);
+              const tmp = e.target.textContent;
+              const category = CATEGORIES.find((c) => c.categoryName === tmp);
+              console.log(category);
+              setCurrentCategory(category);
+              setCurrentView("products");
             }}
           />
           {currentView === "favourites" ? (
@@ -316,28 +339,43 @@ export function Layout() {
               products={products}
               favouriteProducts={favouriteProducts}
               currentGender={currentGender}
-              currentCategory={currentCategory}
+              currentCategory={currentCategory?.categoryName}
               categoryClickCallback={(categoryName) => {
                 setCurrentCategory((prevCurrentCategory) => {
                   if (categoryName === prevCurrentCategory) {
-                    return "";
+                    return null;
                   }
-                  setCurrentSubcategory("");
-                  return categoryName;
+                  setCurrentSubcategory(null);
+                  const category = CATEGORIES.find(
+                    (c) => c.categoryName === categoryName,
+                  );
+                  return category;
                 });
               }}
               categoryBreadcrumbClickCallback={() => {
                 if (currentSubcategory) {
-                  setCurrentSubcategory("");
+                  setCurrentSubcategory(null);
                 }
               }}
-              currentSubcategory={currentSubcategory}
-              subcategoryClickCallback={(subcategoryName) =>
-                setCurrentSubcategory(subcategoryName)
-              }
+              currentSubcategory={currentSubcategory?.categoryName}
+              subcategoryClickCallback={(subcategoryName) => {
+                if (currentCategory?.subcategories) {
+                  console.log("set subcategory:");
+                  console.log(
+                    currentCategory.subcategories.find(
+                      (subCat) => subCat.categoryName === subcategoryName,
+                    ),
+                  );
+                  setCurrentSubcategory(
+                    currentCategory.subcategories.find(
+                      (subCat) => subCat.categoryName === subcategoryName,
+                    ),
+                  );
+                }
+              }}
               subcategoryBreadcrumbClickCallback={() => {
-                setCurrentSubcategory("");
-                setCurrentCategory("");
+                setCurrentSubcategory(null);
+                setCurrentCategory(null);
               }}
               onBackToHome={() => setCurrentView("default")}
             />
@@ -350,7 +388,7 @@ export function Layout() {
           ) : (
             <MainPage
               currentGender={currentGender}
-              currentCategory={currentCategory}
+              currentCategory={currentCategory?.categoryName}
               products={products}
               favouriteProducts={favouriteProducts}
               onExploreProducts={handleExploreProducts}
