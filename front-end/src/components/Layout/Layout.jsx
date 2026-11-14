@@ -39,6 +39,7 @@ export function Layout() {
     () => (cartStorage ? JSON.parse(cartStorage) : []),
     [cartStorage],
   );
+  const [cartStorageLength, setCartStorageLength] = useState(cart.length);
   const [currentCart, setCurrentCart] = useState(cart ? cart : 0);
 
   async function fetchData(request) {
@@ -242,6 +243,7 @@ export function Layout() {
     if (current.filter((p) => p === id).length < MAX_ONE_KIND_IN_CART) {
       const cartProducts = [...current, id];
       localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+      setCartStorageLength((prevLength) => prevLength + 1);
     } else {
       console.error("Cannot add more than 5 products of one type to the cart");
     }
@@ -251,7 +253,11 @@ export function Layout() {
     const cart = localStorage.getItem("cartProducts");
     const current = cart ? JSON.parse(cart) : [];
     const cartProducts = current.filter((productId) => productId !== id);
+    const productIdsToDelete = current.filter((productId) => productId === id);
     localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    setCartStorageLength(
+      (prevLength) => prevLength - productIdsToDelete.length,
+    );
     setCurrentCart((previous) =>
       previous.filter((product) => product.id !== id),
     );
@@ -332,7 +338,7 @@ export function Layout() {
                   setCurrentView("cart");
                 }}
                 favouritesCount={favouriteProducts.length}
-                cartCount={currentCart.length}
+                cartCount={cartStorageLength}
               />
             </TopBar>
           </MainContent>
