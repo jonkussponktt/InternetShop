@@ -19,33 +19,32 @@ export function CartProduct({ id, name, price, image }) {
       <h3 className="price">{formatPrice(price, currency)}</h3>
       <p>Cena: {formatPrice(price, currency)}</p>
 
-      <label>Wybierz ilość</label>
-      <select
-        name="quantity"
-        id="quantity"
-        defaultValue={quantity}
-        onChange={(e) => {
-          const newQuantity = e.target.value;
-          console.log(`newQuantity: ${newQuantity}, quantity: ${quantity}`);
-          if (newQuantity > quantity) {
-            console.log(`newQuantity: ${newQuantity} > quantity: ${quantity}`);
-            for (let i = 0; i < newQuantity - quantity; i++) {
-              onAddToCart(id);
+      <div className="cart-product-quantity">
+        <label htmlFor={`quantity-${id}`}>Wybierz ilość</label>
+        <select
+          name="quantity"
+          id={`quantity-${id}`}
+          defaultValue={quantity}
+          onChange={(e) => {
+            const newQuantity = e.target.value;
+            if (newQuantity > quantity) {
+              for (let i = 0; i < newQuantity - quantity; i++) {
+                onAddToCart(id);
+              }
+            } else if (newQuantity < quantity) {
+              for (let i = 0; i < quantity - newQuantity; i++) {
+                onRemoveFromCart(id);
+              }
             }
-          } else if (newQuantity < quantity) {
-            console.log(`newQuantity: ${newQuantity} < quantity: ${quantity}`);
-            for (let i = 0; i < quantity - newQuantity; i++) {
-              onRemoveFromCart(id);
-            }
-          }
-        }}
-      >
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+          }}
+        >
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
       <button key="remove" onClick={() => onRemoveFromCart(id, true)}>
         Usuń
       </button>

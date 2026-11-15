@@ -334,7 +334,6 @@ export function Layout() {
                 currentGenderCallback={(e) => {
                   const tmp = e.target.textContent;
                   const gender = GENDERS.find((g) => g.categoryName === tmp);
-                  console.log(gender);
                   setCurrentGender(gender);
                   if (currentView !== "products") {
                     setCurrentView("default");
