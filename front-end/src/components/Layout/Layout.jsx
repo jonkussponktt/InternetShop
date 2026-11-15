@@ -186,8 +186,8 @@ export function Layout() {
   }, [currentView, favouritesRevision]);
 
   const addToFavourites = useCallback(
-    (id, name) => {
-      if (!favouriteProducts?.some((f) => f.productName === name)) {
+    (id) => {
+      if (!favouriteProducts?.some((f) => f.id === id)) {
         fetch("http://localhost:3000/favourites", {
           method: "POST",
           body: JSON.stringify({ productId: id }),
@@ -212,8 +212,8 @@ export function Layout() {
   );
 
   const removeFromFavourites = useCallback(
-    async (id, name) => {
-      if (favouriteProducts?.some((f) => f.productName === name)) {
+    async (id) => {
+      if (favouriteProducts?.some((f) => f.id === id)) {
         await handleProductDeleted(id);
       }
     },

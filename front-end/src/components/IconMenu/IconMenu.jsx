@@ -13,12 +13,12 @@ export function IconMenu({
   return (
     <div className="icon-menu">
       <ul>
-        <li className="heart">
-          <img src={heartIcon} alt="Heart" onClick={favouritesClickHandler} />
+        <li className="heart" onClick={favouritesClickHandler}>
+          <img src={heartIcon} alt="Heart" />
           {favouritesCount > 0 && <CountCircle count={favouritesCount} />}
         </li>
-        <li className="bag">
-          <img src={bagIcon} alt="Bag" onClick={cartClickHandler} />
+        <li className="bag" onClick={cartClickHandler}>
+          <img src={bagIcon} alt="Bag" />
           {cartCount > 0 && <CountCircle count={cartCount} />}
         </li>
       </ul>

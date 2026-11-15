@@ -13,9 +13,9 @@ export function Product({ id, name, price, image, isFavourite }) {
         className="addToFavorite"
         onClick={() => {
           if (isFavourite) {
-            onFavouriteRemove(id, name);
+            onFavouriteRemove(id);
           } else {
-            onFavouriteAdd(id, name);
+            onFavouriteAdd(id);
           }
         }}
       >
