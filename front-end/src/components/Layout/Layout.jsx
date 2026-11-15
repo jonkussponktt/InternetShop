@@ -11,6 +11,7 @@ import {
   GENDERS,
   CATEGORIES,
   MAX_ONE_KIND_IN_CART,
+  MIN_ONE_KIND_IN_CART,
 } from "../../constants/categories";
 import { FavouritesList } from "../../views/Favourites/FavouritesList";
 import { Cart } from "../../views/Cart/Cart";
@@ -214,7 +215,7 @@ export function Layout() {
   const removeFromFavourites = useCallback(
     async (id) => {
       if (favouriteProducts?.some((f) => f.id === id)) {
-        await handleProductDeleted(id);
+        await handleProductDeletedFromFavourites(id);
       }
     },
     [favouriteProducts],
@@ -240,6 +241,7 @@ export function Layout() {
       setCurrentCart((previous) => [...previous, newProduct]);
     }
 
+
     if (current.filter((p) => p === id).length < MAX_ONE_KIND_IN_CART) {
       const cartProducts = [...current, id];
       localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
@@ -249,18 +251,29 @@ export function Layout() {
     }
   }, []);
 
-  const removeProductFromCart = useCallback((id) => {
+  const removeProductFromCart = useCallback((id, bulk = false) => {
     const cart = localStorage.getItem("cartProducts");
     const current = cart ? JSON.parse(cart) : [];
-    const cartProducts = current.filter((productId) => productId !== id);
-    const productIdsToDelete = current.filter((productId) => productId === id);
-    localStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-    setCartStorageLength(
-      (prevLength) => prevLength - productIdsToDelete.length,
-    );
-    setCurrentCart((previous) =>
-      previous.filter((product) => product.id !== id),
-    );
+    const currentQuantity = current.filter(
+      (productId) => productId === id,
+    ).length;
+
+    // if we delete all the items from Cart by clicking "Delete" button => bulk deletion
+    if (currentQuantity === MIN_ONE_KIND_IN_CART || bulk) {
+      setCurrentCart((previous) =>
+        previous.filter((product) => product.id !== id),
+      );
+      const otherCartProducts = current.filter((productId) => productId !== id);
+      localStorage.setItem("cartProducts", JSON.stringify(otherCartProducts));
+      setCartStorageLength((prevLength) => prevLength - currentQuantity);
+    } else {
+      // decreasing the number by one in "Choose quantity" dropdown
+
+      const lastIndexOfProduct = current.lastIndexOf(id);
+      current.splice(lastIndexOfProduct, 1);
+      localStorage.setItem("cartProducts", JSON.stringify(current));
+      setCartStorageLength((prevLength) => prevLength - 1);
+    }
   }, []);
 
   const productActions = useMemo(
@@ -280,7 +293,7 @@ export function Layout() {
     ],
   );
 
-  async function handleProductDeleted(productId) {
+  async function handleProductDeletedFromFavourites(productId) {
     const toBeDeletedId = await fetch(`http://localhost:3000/favourites`)
       .then((response) =>
         response
@@ -347,7 +360,6 @@ export function Layout() {
             currentCategoryCallback={(e) => {
               const tmp = e.target.textContent;
               const category = CATEGORIES.find((c) => c.categoryName === tmp);
-              console.log(category);
               setCurrentCategory(category);
               setCurrentView("products");
             }}
@@ -355,7 +367,7 @@ export function Layout() {
           {currentView === "favourites" ? (
             <FavouritesList
               products={favouriteProducts}
-              onProductDeleted={handleProductDeleted}
+              onProductDeleted={handleProductDeletedFromFavourites}
               onExploreProducts={handleExploreProducts}
               status={favouritesStatus}
             />
