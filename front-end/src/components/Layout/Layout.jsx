@@ -12,6 +12,8 @@ import {
   CATEGORIES,
   MAX_ONE_KIND_IN_CART,
   MIN_ONE_KIND_IN_CART,
+  DEFAULT_PRODUCTS_PER_PAGE,
+  DEFAULT_CURRENT_PAGE,
 } from "../../constants/categories";
 import { FavouritesList } from "../../views/Favourites/FavouritesList";
 import { Cart } from "../../views/Cart/Cart";
@@ -34,6 +36,9 @@ export function Layout() {
   const [favouritesStatus, setFavouritesStatus] = useState("loading");
   const [favouritesRevision, setFavouritesRevision] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [productsLimit, setProductsLimit] = useState(DEFAULT_PRODUCTS_PER_PAGE);
+  const [currentPage, setCurrentPage] = useState(DEFAULT_CURRENT_PAGE);
+  const [pagesNumber, setPagesNumber] = useState(1);
 
   const cartStorage = localStorage.getItem("cartProducts");
   const cart = useMemo(
@@ -104,17 +109,27 @@ export function Layout() {
           }
         } else if (currentView === "products") {
           const base = `http://localhost:3000/products?gender=${currentGender.apiValue}`;
-          const query =
+          const queryWithCategory =
             base +
             (currentCategory !== null && currentCategory !== undefined
               ? `&category=${currentCategory.path}`
               : "");
-          const finalQuery =
-            query +
+          const queryWithSubcategory =
+            queryWithCategory +
             (currentSubcategory
               ? `&subcategory=${currentSubcategory.path}`
               : "");
-          const data = await fetchData(finalQuery);
+          const fullQuery =
+            queryWithSubcategory +
+            `&_limit=${productsLimit}&_page=${currentPage}`;
+          const data = await fetch(fullQuery).then(async (response) => {
+            if (response.ok) {
+              const data = await response.json();
+              const tmpTotalCount = response.headers.get("X-Total-Count");
+              setPagesNumber(Math.ceil(tmpTotalCount / productsLimit));
+              return data;
+            }
+          });
           if (!Array.isArray(data)) {
             throw new Error("The products resource did not return an array");
           }
@@ -151,6 +166,8 @@ export function Layout() {
     currentProductId,
     currentCategory,
     currentSubcategory,
+    currentPage,
+    productsLimit,
   ]);
 
   useEffect(() => {
@@ -240,7 +257,6 @@ export function Layout() {
       );
       setCurrentCart((previous) => [...previous, newProduct]);
     }
-
 
     if (current.filter((p) => p === id).length < MAX_ONE_KIND_IN_CART) {
       const cartProducts = [...current, id];
@@ -381,6 +397,12 @@ export function Layout() {
               favouriteProducts={favouriteProducts}
               currentGender={currentGender}
               currentCategory={currentCategory?.categoryName}
+              productsLimit={productsLimit}
+              currentPage={currentPage - 1}
+              pagesNumber={pagesNumber}
+              pageNumberClickCallback={(pageNumber) => {
+                setCurrentPage(pageNumber);
+              }}
               categoryClickCallback={(categoryName) => {
                 setCurrentCategory((prevCurrentCategory) => {
                   if (categoryName === prevCurrentCategory) {

@@ -2,11 +2,6 @@ import { CartProduct } from "./CartProduct";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
 
 export function CartProductsList({ products, onExploreProducts }) {
-  // let productsByQuantity = new Map();
-  // current.forEach((id) => {
-  //   productsByQuantity.set(id, products.filter((p) => p.id === id).length);
-  // });
-
   let checkedIds = new Set();
 
   return (

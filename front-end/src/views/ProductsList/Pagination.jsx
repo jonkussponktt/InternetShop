@@ -1,9 +1,23 @@
-export function Pagination({ pagesNumber }) {
+import "./styles/Pagination/Pagination.css";
+
+export function Pagination({
+  pagesNumber,
+  currentPage,
+  pageNumberClickCallback,
+}) {
   return (
-    <div className="pagination">
+    <nav className="pagination" aria-label="Paginacja produktów">
       {Array.from({ length: pagesNumber }, (_, index) => (
-        <div key={index}>{index} | </div>
+        <button
+          key={index}
+          type="button"
+          onClick={() => pageNumberClickCallback(String(index + 1))}
+          disabled={index === currentPage}
+          aria-current={index === currentPage ? "page" : undefined}
+        >
+          {index + 1}
+        </button>
       ))}
-    </div>
+    </nav>
   );
 }

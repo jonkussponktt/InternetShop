@@ -10,6 +10,10 @@ export function ProductsList({
   favouriteProducts,
   currentGender,
   currentCategory,
+  productsLimit,
+  currentPage,
+  pagesNumber,
+  pageNumberClickCallback,
   categoryClickCallback,
   categoryBreadcrumbClickCallback,
   currentSubcategory,
@@ -48,8 +52,13 @@ export function ProductsList({
           <Products
             products={products}
             favouriteProducts={favouriteProducts}
+            productsLimit={productsLimit}
           />
-          <Pagination pagesNumber={5} />
+          <Pagination
+            pagesNumber={pagesNumber}
+            currentPage={currentPage}
+            pageNumberClickCallback={pageNumberClickCallback}
+          />
         </>
       )}
     </div>
