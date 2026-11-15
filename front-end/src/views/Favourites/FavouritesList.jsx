@@ -3,14 +3,11 @@ import { FavouriteProduct } from "./FavouriteProduct";
 import { EmptyState } from "../../components/EmptyState/EmptyState";
 import { formatPrice } from "../../constants/setPrice";
 import { useCurrency } from "../../contexts/CurrencyContext";
+import { useFavourites } from "../../contexts/FavouritesContext";
 
-export function FavouritesList({
-  products,
-  onProductDeleted,
-  onExploreProducts,
-  status,
-}) {
+export function FavouritesList({ onExploreProducts }) {
   const currency = useCurrency();
+  const { products, status, error } = useFavourites();
 
   return (
     <div className="favourites-list">
@@ -21,26 +18,34 @@ export function FavouritesList({
         </p>
       ) : status === "error" ? (
         <p className="favourites-list-status" role="alert">
-          Nie udało się załadować ulubionych produktów.
+          Nie udało się załadować ulubionych produktów: {error?.message}
         </p>
-      ) : products.length === 0 ? (
-        <EmptyState
-          title="Nie masz jeszcze ulubionych produktów"
-          description="Dodaj produkty do ulubionych, aby szybko do nich wrócić."
-          actionLabel="Przeglądaj produkty"
-          onAction={onExploreProducts}
-        />
       ) : (
-        products.map((p) => (
-          <FavouriteProduct
-            key={p.id}
-            id={p.id}
-            name={p.productName}
-            price={formatPrice(p.pricePLN, currency)}
-            image={p.photos?.[0]}
-            onProductDeleted={onProductDeleted}
-          />
-        ))
+        <>
+          {error && (
+            <p className="favourites-list-status" role="alert">
+              {error.message}
+            </p>
+          )}
+          {products.length === 0 ? (
+            <EmptyState
+              title="Nie masz jeszcze ulubionych produktów"
+              description="Dodaj produkty do ulubionych, aby szybko do nich wrócić."
+              actionLabel="Przeglądaj produkty"
+              onAction={onExploreProducts}
+            />
+          ) : (
+            products.map((p) => (
+              <FavouriteProduct
+                key={p.id}
+                id={p.id}
+                name={p.productName}
+                price={formatPrice(p.pricePLN, currency)}
+                image={p.photos?.[0]}
+              />
+            ))
+          )}
+        </>
       )}
     </div>
   );

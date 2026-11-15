@@ -7,7 +7,6 @@ import { EmptyState } from "../../components/EmptyState/EmptyState";
 
 export function ProductsList({
   products,
-  favouriteProducts,
   currentGender,
   currentCategory,
   productsLimit,
@@ -51,7 +50,6 @@ export function ProductsList({
         <>
           <Products
             products={products}
-            favouriteProducts={favouriteProducts}
             productsLimit={productsLimit}
           />
           <Pagination

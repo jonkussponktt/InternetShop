@@ -14,7 +14,6 @@ export function MainPage({
   onButtonClick,
   onExploreProducts,
   products,
-  favouriteProducts,
 }) {
   const currency = useCurrency();
   const selectedGenderApiValue = GENDERS.find(
@@ -53,9 +52,6 @@ export function MainPage({
                 name={product.productName}
                 price={formatPrice(product.pricePLN, currency)}
                 image={product.photos[0]}
-                isFavourite={favouriteProducts.some(
-                  (favProduct) => favProduct.id === product.id,
-                )}
               />
             ))}
           </CenteredContent>

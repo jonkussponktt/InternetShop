@@ -1,14 +1,13 @@
 import { formatPrice } from "../../constants/setPrice";
 import { useCurrency } from "../../contexts/CurrencyContext";
 import { useProductActions } from "../../contexts/ProductActionsContext";
+import { useCart } from "../../contexts/CartContext";
 
 export function CartProduct({ id, name, price, image }) {
   const currency = useCurrency();
-  const { onProductChosen, onAddToCart, onRemoveFromCart } =
-    useProductActions();
-  const cart = localStorage.getItem("cartProducts");
-  const current = cart ? JSON.parse(cart) : [];
-  const quantity = current.filter((c) => c === id).length;
+  const { onProductChosen } = useProductActions();
+  const { getQuantity, addToCart, removeFromCart } = useCart();
+  const quantity = getQuantity(id);
 
   return (
     <div className="cart-product">
@@ -29,11 +28,11 @@ export function CartProduct({ id, name, price, image }) {
             const newQuantity = e.target.value;
             if (newQuantity > quantity) {
               for (let i = 0; i < newQuantity - quantity; i++) {
-                onAddToCart(id);
+                addToCart(id);
               }
             } else if (newQuantity < quantity) {
               for (let i = 0; i < quantity - newQuantity; i++) {
-                onRemoveFromCart(id);
+                removeFromCart(id);
               }
             }
           }}
@@ -45,7 +44,7 @@ export function CartProduct({ id, name, price, image }) {
           <option value="5">5</option>
         </select>
       </div>
-      <button key="remove" onClick={() => onRemoveFromCart(id, true)}>
+      <button key="remove" onClick={() => removeFromCart(id, true)}>
         Usuń
       </button>
     </div>

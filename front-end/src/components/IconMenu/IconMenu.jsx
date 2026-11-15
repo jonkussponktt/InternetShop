@@ -1,15 +1,17 @@
 import "./IconMenu.css";
 import heartIcon from "../../assets/heart.svg";
 import bagIcon from "../../assets/bag.svg";
-
 import { CountCircle } from "../CountCircle/CountCircle";
+import { useFavourites } from "../../contexts/FavouritesContext";
+import { useCart } from "../../contexts/CartContext";
 
 export function IconMenu({
   favouritesClickHandler,
   cartClickHandler,
-  favouritesCount,
-  cartCount,
 }) {
+  const { count: favouritesCount } = useFavourites();
+  const { itemCount: cartCount } = useCart();
+
   return (
     <div className="icon-menu">
       <ul>

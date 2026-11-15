@@ -2,9 +2,11 @@ import truck from "../../assets/truck.svg";
 import "./styles/CartSummary/CartSummary.css";
 import { formatPrice } from "../../constants/setPrice";
 import { useCurrency } from "../../contexts/CurrencyContext";
+import { useCart } from "../../contexts/CartContext";
 
-export function CartSummary({ products }) {
+export function CartSummary() {
   const currency = useCurrency();
+  const { products } = useCart();
 
   const totalPrice = products.reduce(
     (total, product) => total + product.pricePLN,

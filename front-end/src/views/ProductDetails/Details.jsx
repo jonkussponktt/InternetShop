@@ -4,18 +4,18 @@ import ret from "../../assets/return.svg";
 import { Accordion } from "./Accordion";
 import { formatPrice } from "../../constants/setPrice";
 import { useCurrency } from "../../contexts/CurrencyContext";
-import { useProductActions } from "../../contexts/ProductActionsContext";
+import { useCart } from "../../contexts/CartContext";
 
 export function Details({ product }) {
   const currency = useCurrency();
-  const { onAddToCart } = useProductActions();
+  const { addToCart } = useCart();
 
   return (
     <div className="details">
       <h2>{product.brand}</h2>
       <p>{product.productName}</p>
       <p>Cena: {formatPrice(product.pricePLN, currency)}</p>
-      <button onClick={() => onAddToCart(product.id)}>
+      <button onClick={() => addToCart(product.id)}>
         Dodaj do koszyka
       </button>
       <img src={truck} alt="Truck" />

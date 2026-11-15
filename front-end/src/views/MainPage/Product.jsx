@@ -2,10 +2,12 @@ import "./styles/Product/Product.css";
 import heartIcon from "../../assets/heart.svg";
 import filledHeartIcon from "../../assets/heart-filled.svg";
 import { useProductActions } from "../../contexts/ProductActionsContext";
+import { useFavourites } from "../../contexts/FavouritesContext";
 
-export function Product({ id, name, price, image, isFavourite }) {
-  const { onProductChosen, onFavouriteAdd, onFavouriteRemove } =
-    useProductActions();
+export function Product({ id, name, price, image }) {
+  const { onProductChosen } = useProductActions();
+  const { products, addFavourite, removeFavourite } = useFavourites();
+  const isFavourite = products.some((product) => product.id === id);
 
   return (
     <div className="product">
@@ -13,9 +15,9 @@ export function Product({ id, name, price, image, isFavourite }) {
         className="addToFavorite"
         onClick={() => {
           if (isFavourite) {
-            onFavouriteRemove(id);
+            removeFavourite(id);
           } else {
-            onFavouriteAdd(id);
+            addFavourite(id);
           }
         }}
       >
