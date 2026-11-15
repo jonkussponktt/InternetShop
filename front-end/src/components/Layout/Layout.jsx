@@ -6,7 +6,7 @@ import { CurrencySelector } from "../CurrencySelector/CurrencySelector";
 import { IconMenu } from "../IconMenu/IconMenu";
 import { CategoriesMenu } from "../CategoriesMenu/CategoriesMenu";
 import { Footer } from "../Footer/Footer";
-import { MainPage } from "../../views/MainPage/MainPage";
+import { MainPage } from "../../views/MainPage/MainPage/MainPage";
 import {
   GENDERS,
   CATEGORIES,
@@ -15,10 +15,10 @@ import {
   DEFAULT_PRODUCTS_PER_PAGE,
   DEFAULT_CURRENT_PAGE,
 } from "../../config/appConfig";
-import { FavouritesList } from "../../views/Favourites/FavouritesList";
-import { Cart } from "../../views/Cart/Cart";
-import { ProductsList } from "../../views/ProductsList/ProductsList";
-import { ProductDetails } from "../../views/ProductDetails/ProductDetails";
+import { FavouritesList } from "../../views/Favourites/FavouritesList/FavouritesList";
+import { Cart } from "../../views/Cart/Cart/Cart";
+import { ProductsList } from "../../views/ProductsList/ProductsList/ProductsList";
+import { ProductDetails } from "../../views/ProductDetails/ProductDetails/ProductDetails";
 import { CurrencyProvider } from "../../contexts/CurrencyProvider";
 import { ProductActionsProvider } from "../../contexts/ProductActionsProvider";
 import { FavouritesProvider } from "../../contexts/FavouritesProvider";
